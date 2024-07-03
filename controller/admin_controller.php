@@ -9,8 +9,8 @@ use vendor\DB;
 
 class AdminController
 {
-
-    public function verify($headers): ?bool
+    public ?Admin $admin;
+    public function verify($headers): ?admin
     {
         if (!isset($headers['name']) || !isset($headers['password'])) {
             header("HTTP/1.1 401 Unauthorized");
@@ -26,7 +26,12 @@ class AdminController
             echo json_encode(['error' => "UnAuthorized"]);
             exit();
         }
-        return true;
+
+
+        while ($row = mysqli_fetch_object($res)) {
+            $admin = new Admin($row->name_a, $row->password, $row->id_a);
+        }
+        return $admin;
     }
 
 
